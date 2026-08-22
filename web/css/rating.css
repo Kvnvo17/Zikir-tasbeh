@@ -1,0 +1,119 @@
+.rating-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.rating-tab {
+  flex: 1;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #b6b0d6;
+  padding: 9px 0;
+  border-radius: 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.rating-tab.active {
+  background: linear-gradient(135deg, #9a6bff, #6a3fd8);
+  color: #fff;
+  border-color: transparent;
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rating-row.me {
+  background: rgba(154, 107, 255, 0.12);
+  border-radius: 12px;
+}
+
+.rating-rank {
+  width: 26px;
+  text-align: center;
+  font-weight: 700;
+  color: #b48bff;
+  font-size: 13px;
+}
+
+.rating-rank.top1 { color: #ffd15c; }
+.rating-rank.top2 { color: #d8dcea; }
+.rating-rank.top3 { color: #e0a067; }
+
+.rating-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6a3fd8, #9a6bff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.rating-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rating-name {
+  flex: 1;
+  font-size: 13.5px;
+}
+
+.rating-count {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #d8d3f5;
+}
+
+.reward-card-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.reward-card-item .num {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.copy-btn {
+  background: rgba(154, 107, 255, 0.18);
+  color: #b48bff;
+  border: none;
+  border-radius: 10px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.warning-box {
+  background: rgba(255, 200, 92, 0.08);
+  border: 1px solid rgba(255, 200, 92, 0.25);
+  color: #ffc85c;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 6px;
+}
