@@ -47,7 +47,9 @@ window.TasbehPage = (function () {
         <div class="zikr-select-row">
 
           <div class="zikr-display">
-            <div class="zikr-small-label">Hozirgi zikr</div>
+            <div class="zikr-small-label">
+              Hozirgi zikr
+            </div>
 
             <h2
               class="zikr-title"
@@ -161,8 +163,15 @@ window.TasbehPage = (function () {
       updateStatsUI();
 
     } catch (e) {
-      console.error(e);
-      Toast.show(e.message || "Ma'lumotlarni yuklashda xatolik");
+      console.error(
+        "Tasbeh ma'lumot xatosi:",
+        e
+      );
+
+      Toast.show(
+        e.message ||
+        "Ma'lumotlarni yuklashda xatolik"
+      );
     }
   }
 
@@ -195,7 +204,10 @@ window.TasbehPage = (function () {
     if (goalFill) {
       const percent =
         state.dailyGoal > 0
-          ? (state.todayCount / state.dailyGoal) * 100
+          ? (
+              state.todayCount /
+              state.dailyGoal
+            ) * 100
           : 0;
 
       goalFill.style.width =
@@ -217,28 +229,38 @@ window.TasbehPage = (function () {
 
   function bindEvents(root) {
 
+    // ==========================================
     // 33 / 99 / ∞
+    // ==========================================
+
     root
       .querySelectorAll(".mode-tab")
       .forEach((tab) => {
 
-        tab.addEventListener("click", () => {
+        tab.addEventListener(
+          "click",
+          () => {
 
-          state.mode =
-            tab.dataset.mode;
+            state.mode =
+              tab.dataset.mode;
 
-          state.value = 0;
+            state.value = 0;
 
-          TG.haptic("light");
+            TG.haptic("light");
 
-          updateModeUI(root);
-          updateCountUI(root);
-        });
+            updateModeUI(root);
+            updateCountUI(root);
+
+          }
+        );
 
       });
 
 
+    // ==========================================
     // ZIKR O'ZGARTIRISH
+    // ==========================================
+
     const changeZikrBtn =
       document.getElementById(
         "changeZikrBtn"
@@ -255,7 +277,14 @@ window.TasbehPage = (function () {
 
               state.zikr = zikr;
 
+              // Zikr almashtirilganda
+              // tasbehni 0 ga qaytarish
+              state.value = 0;
+
               updateStatsUI();
+              updateCountUI(root);
+
+              TG.haptic("light");
 
             }
           );
@@ -266,7 +295,10 @@ window.TasbehPage = (function () {
     }
 
 
-    // MAQSAD
+    // ==========================================
+    // KUNLIK MAQSAD
+    // ==========================================
+
     const goalRow =
       document.getElementById(
         "goalRow"
@@ -320,7 +352,10 @@ window.TasbehPage = (function () {
                     10
                   );
 
-                if (!value || value <= 0) {
+                if (
+                  !value ||
+                  value <= 0
+                ) {
 
                   Toast.show(
                     "Noto'g'ri qiymat"
@@ -354,6 +389,11 @@ window.TasbehPage = (function () {
 
                 } catch (e) {
 
+                  console.error(
+                    "Maqsad xatosi:",
+                    e
+                  );
+
                   Toast.show(
                     e.message ||
                     "Xatolik yuz berdi"
@@ -372,7 +412,10 @@ window.TasbehPage = (function () {
     }
 
 
+    // ==========================================
     // TASBEH TUGMASI
+    // ==========================================
+
     const tasbehBtn =
       document.getElementById(
         "tasbehBtn"
@@ -382,12 +425,21 @@ window.TasbehPage = (function () {
 
       tasbehBtn.addEventListener(
         "click",
-        () => onTap(tasbehBtn)
+        () => {
+
+          onTap(tasbehBtn);
+
+        }
       );
 
     }
 
   }
+
+
+  // ==========================================
+  // MODE UI
+  // ==========================================
 
   function updateModeUI(root) {
 
@@ -397,12 +449,18 @@ window.TasbehPage = (function () {
 
         tab.classList.toggle(
           "active",
-          tab.dataset.mode === state.mode
+          tab.dataset.mode ===
+            state.mode
         );
 
       });
 
   }
+
+
+  // ==========================================
+  // COUNT UI
+  // ==========================================
 
   function updateCountUI(root) {
 
@@ -416,36 +474,52 @@ window.TasbehPage = (function () {
         "ringFill"
       );
 
+    const progress =
+      Counter.progressPct(
+        state.value,
+        state.mode
+      );
+
     if (countEl) {
 
       countEl.textContent =
         state.value;
+
+      // Raqamga yangi animatsiya
+      countEl.classList.remove(
+        "tasbeh-count-pop"
+      );
+
+      void countEl.offsetWidth;
+
+      countEl.classList.add(
+        "tasbeh-count-pop"
+      );
 
     }
 
     if (ringFill) {
 
       ringFill.style.width =
-        `${Counter.progressPct(
-          state.value,
-          state.mode
-        )}%`;
+        `${progress}%`;
 
       TasbehAnimation.setRing(
         ringFill,
-        Counter.progressPct(
-          state.value,
-          state.mode
-        )
+        progress
       );
 
     }
 
   }
 
+
+  // ==========================================
+  // TASBEH BOSILISHI
+  // ==========================================
+
   async function onTap(btnEl) {
 
-    // 1. Keyingi son
+    // Keyingi son
     state.value =
       Counter.nextValue(
         state.value,
@@ -453,17 +527,17 @@ window.TasbehPage = (function () {
       );
 
 
-    // 2. Tasbeh animatsiyasi
+    // Bosilgandagi yumshoq animatsiya
     TasbehAnimation.pulse(
       btnEl
     );
 
 
-    // 3. Telefon vibratsiyasi
+    // Telefon vibratsiyasi
     TG.haptic("light");
 
 
-    // 4. Ekrandagi sonni yangilash
+    // Sonni yangilash
     updateCountUI(
       document.getElementById(
         "page-root"
@@ -471,7 +545,10 @@ window.TasbehPage = (function () {
     );
 
 
-    // 5. 33 yoki 99 ga yetganda kuchliroq animatsiya
+    // ========================================
+    // 33 / 99 YAKUNLANGANDA
+    // ========================================
+
     if (
       Counter.isComplete(
         state.value,
@@ -479,29 +556,30 @@ window.TasbehPage = (function () {
       )
     ) {
 
-      btnEl.classList.remove(
-        "bead"
+      // Kuchli yakuniy animatsiya
+      TasbehAnimation.complete(
+        btnEl
       );
 
-      void btnEl.offsetWidth;
-
-      btnEl.classList.add(
-        "bead"
-      );
-
+      // Kuchli vibratsiya
       TG.haptic("success");
 
     }
 
 
-    // 6. Serverga yuborish
+    // ========================================
+    // SERVERGA YUBORISH
+    // ========================================
+
     API.post(
       "/tasbeh/increment",
       {
         mode: state.mode,
-        zikr_id: state.zikr
-          ? state.zikr.id
-          : null,
+
+        zikr_id:
+          state.zikr
+            ? state.zikr.id
+            : null,
       }
     )
 
@@ -530,6 +608,11 @@ window.TasbehPage = (function () {
       });
 
   }
+
+
+  // ==========================================
+  // PUBLIC
+  // ==========================================
 
   return {
     render,
