@@ -1,0 +1,93 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: radial-gradient(120% 80% at 20% 0%, #16202f 0%, #0b0d12 55%);
+  color: #eef0f6;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.tutorial-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 22px calc(24px + env(safe-area-inset-bottom));
+}
+
+.slide {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.slide.active {
+  display: flex;
+}
+
+.icon {
+  font-size: 56px;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-size: 21px;
+  margin: 0 0 10px;
+}
+
+p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #b9bdcf;
+  max-width: 320px;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.dots .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.dots .dot.active {
+  background: #5b9dff;
+  transform: scale(1.3);
+}
+
+.nav-row {
+  display: flex;
+  gap: 10px;
+}
+
+.tbtn {
+  flex: 1;
+  border: none;
+  border-radius: 14px;
+  padding: 14px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #4f7cff, #7a5cff);
+  cursor: pointer;
+}
+
+.tbtn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
