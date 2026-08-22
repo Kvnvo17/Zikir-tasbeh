@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Zikr &amp; Tasbeh — Admin</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --border:#2a2f3a;
+    --text:#e8eaf0; --muted:#8b93a7; --accent:#6c8cff; --green:#39d98a;
+    --red:#ff5c72; --yellow:#ffc85c;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  header{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;z-index:10}
+  header h1{font-size:16px;margin:0;font-weight:600}
+  #tokenBadge{font-size:11px;color:var(--muted)}
+  nav{display:flex;gap:4px;overflow-x:auto;background:var(--panel);border-bottom:1px solid var(--border);padding:0 12px}
+  nav button{background:none;border:none;color:var(--muted);padding:12px 14px;font-size:13px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
+  nav button.active{color:var(--text);border-bottom-color:var(--accent)}
+  main{padding:16px;max-width:900px;margin:0 auto}
+  .card{background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+  .stat{background:var(--panel);border-radius:12px;padding:14px;text-align:center}
+  .stat .n{font-size:22px;font-weight:700;color:var(--accent)}
+  .stat .l{font-size:11px;color:var(--muted);margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border)}
+  th{color:var(--muted);font-weight:500;font-size:11px;text-transform:uppercase}
+  input,textarea,select{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:9px 10px;border-radius:8px;font-size:13px;margin-bottom:8px}
+  label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+  button.btn{background:var(--accent);color:#fff;border:none;padding:9px 14px;border-radius:8px;font-size:13px;cursor:pointer}
+  button.btn.secondary{background:var(--panel);border:1px solid var(--border);color:var(--text)}
+  button.btn.danger{background:var(--red)}
+  button.btn.small{padding:5px 10px;font-size:12px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px}
+  .badge.pending{background:#4a3c00;color:var(--yellow)}
+  .badge.approved{background:#0d3d27;color:var(--green)}
+  .badge.rejected{background:#4a1420;color:var(--red)}
+  .section-title{font-size:14px;font-weight:600;margin:0 0 12px}
+  #loginScreen{max-width:360px;margin:80px auto;text-align:center}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="card">
+    <p class="section-title">Admin panelga kirish</p>
+    <p style="color:var(--muted);font-size:13px">Botda <code>/admin</code> buyrug'ini yuboring va olingan havoladan foydalaning, yoki tokenni shu yerga joylashtiring.</p>
+    <input id="manualToken" placeholder="Admin token" />
+    <button class="btn" onclick="saveManualToken()">Kirish</button>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <h1>Zikr &amp; Tasbeh — Admin</h1>
+    <span id="tokenBadge"></span>
+  </header>
+  <nav id="tabsNav"></nav>
+  <main id="content"></main>
+</div>
+
+<script>
+const API = "/api/admin";
+let TOKEN = localStorage.getItem("admin_token") || "";
+
+const params = new URLSearchParams(location.search);
+if (params.get("token")) {
+  TOKEN = params.get("token");
+  localStorage.setItem("admin_token", TOKEN);
+}
+
+function saveManualToken(){
+  const v = document.getElementById("manualToken").value.trim();
+  if(!v) return;
+  TOKEN = v;
+  localStorage.setItem("admin_token", TOKEN);
+  boot();
+}
+
+async function api(path, opts={}) {
+  const res = await fetch(API + path, {
+    ...opts,
+    headers: { "Content-Type": "application/json", "X-Admin-Token": TOKEN, ...(opts.headers||{}) }
+  });
+  if (res.status === 401 || res.status === 403) {
+    localStorage.removeItem("admin_token");
+    document.getElementById("app").classList.add("hidden");
+    document.getElementById("loginScreen").classList.remove("hidden");
+    throw new Error("unauthorized");
+  }
+  return res.json();
+}
+
+const TABS = [
+  {id:"dashboard", label:"Dashboard"},
+  {id:"users", label:"Users"},
+  {id:"admins", label:"Adminlar"},
+  {id:"zikrs", label:"Zikrlar"},
+  {id:"submissions", label:"Submissions"},
+  {id:"publicchat", label:"Ommaviy chat"},
+  {id:"helpers", label:"Yordamchilar"},
+  {id:"rewardcards", label:"Mukofot kartalari"},
+  {id:"campaigns", label:"Kampaniyalar"},
+  {id:"settings", label:"Sozlamalar"},
+];
+
+let activeTab = "dashboard";
+
+function boot(){
+  if(!TOKEN){
+    document.getElementById("loginScreen").classList.remove("hidden");
+    document.getElementById("app").classList.add("hidden");
+    return;
+  }
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("tokenBadge").textContent = "token: " + TOKEN.slice(0,10) + "...";
+
+  const nav = document.getElementById("tabsNav");
+  nav.innerHTML = "";
+  TABS.forEach(t=>{
+    const b = document.createElement("button");
+    b.textContent = t.label;
+    b.className = t.id===activeTab? "active":"";
+    b.onclick = ()=>{ activeTab=t.id; boot(); };
+    nav.appendChild(b);
+  });
+
+  render();
+}
+
+async function render(){
+  const el = document.getElementById("content");
+  el.innerHTML = "<p style='color:var(--muted)'>Yuklanmoqda...</p>";
+  try {
+    if(activeTab==="dashboard") return renderDashboard(el);
+    if(activeTab==="users") return renderUsers(el);
+    if(activeTab==="admins") return renderAdmins(el);
+    if(activeTab==="zikrs") return renderZikrs(el);
+    if(activeTab==="submissions") return renderSubmissions(el);
+    if(activeTab==="publicchat") return renderPublicChat(el);
+    if(activeTab==="helpers") return renderHelpers(el);
+    if(activeTab==="rewardcards") return renderRewardCards(el);
+    if(activeTab==="campaigns") return renderCampaigns(el);
+    if(activeTab==="settings") return renderSettings(el);
+  } catch(e){ /* unauthorized already handled */ }
+}
+
+async function renderDashboard(el){
+  const d = await api("/dashboard");
+  el.innerHTML = `
+    <div class="card">
+      <p class="section-title">Umumiy statistika</p>
+      <div class="grid">
+        <div class="stat"><div class="n">${d.total_users}</div><div class="l">Foydalanuvchilar</div></div>
+        <div class="stat"><div class="n">${d.today_taps}</div><div class="l">Bugungi zikrlar</div></div>
+        <div class="stat"><div class="n">${d.pending_submissions}</div><div class="l">Kutilayotgan zikrlar</div></div>
+        <div class="stat"><div class="n">${d.pending_campaigns}</div><div class="l">Tasdiq kutayotgan kampaniya</div></div>
+        <div class="stat"><div class="n">${d.broadcasts_sent}</div><div class="l">Yuborilgan reklamalar</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="section-title">Reklama yuborish</p>
+      <p style="color:var(--muted);font-size:13px">Botga <code>/broadcast</code> buyrug'ini yuboring, kontentni jo'nating va tasdiqlang.</p>
+    </div>`;
+}
+
+async function renderUsers(el){
+  const users = await api("/users?limit=100");
+  el.innerHTML = `<div class="card"><p class="section-title">Foydalanuvchilar</p>
+    <table><thead><tr><th>Ism</th><th>Username</th><th>Jami</th><th>Holat</th><th></th></tr></thead>
+    <tbody>${users.map(u=>`
+      <tr>
+        <td>${escapeHtml(u.first_name)}</td>
+        <td>${u.username? "@"+u.username : "-"}</td>
+        <td>${u.total_count}</td>
+        <td>${u.is_banned? '<span class="badge rejected">bloklangan</span>':'<span class="badge approved">faol</span>'}</td>
+        <td><button class="btn small ${u.is_banned?'secondary':'danger'}" onclick="toggleBan(${u.id}, ${!u.is_banned})">${u.is_banned?'Blokdan chiqarish':'Bloklash'}</button></td>
+      </tr>`).join("")}</tbody></table></div>`;
+}
+
+async function toggleBan(userId, banned){
+  await api(`/users/${userId}/ban?banned=${banned}`, {method:"POST"});
+  render();
+}
+
+async function renderAdmins(el){
+  const admins = await api("/admins");
+  el.innerHTML = `
+    <div class="card"><p class="section-title">Yangi admin qo'shish</p>
+      <label>Telegram ID</label><input id="newAdminId" type="number" />
+      <label>Ism (ixtiyoriy)</label><input id="newAdminName" />
+      <button class="btn" onclick="addAdmin()">Qo'shish</button>
+    </div>
+    <div class="card"><p class="section-title">Adminlar ro'yxati</p>
+    <table><thead><tr><th>Ism</th><th>Telegram ID</th><th>Turi</th><th></th></tr></thead>
+    <tbody>${admins.map(a=>`
+      <tr><td>${escapeHtml(a.name||"-")}</td><td>${a.telegram_id}</td>
+      <td>${a.is_super_admin?'Super admin':'Admin'}</td>
+      <td>${a.is_super_admin?'':`<button class="btn small danger" onclick="removeAdmin(${a.id})">O'chirish</button>`}</td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+async function addAdmin(){
+  const telegram_id = parseInt(document.getElementById("newAdminId").value);
+  const name = document.getElementById("newAdminName").value;
+  if(!telegram_id) return alert("Telegram ID kiriting");
+  await api("/admins", {method:"POST", body: JSON.stringify({telegram_id, name})});
+  render();
+}
+async function removeAdmin(id){
+  if(!confirm("O'chirishni tasdiqlaysizmi?")) return;
+  await api(`/admins/${id}`, {method:"DELETE"});
+  render();
+}
+
+async function renderZikrs(el){
+  const zikrs = await api("/zikrs");
+  el.innerHTML = `
+    <div class="card"><p class="section-title">Yangi zikr qo'shish</p>
+      <input id="newZikrText" placeholder="Zikr matni" />
+      <button class="btn" onclick="addZikr()">Qo'shish</button>
+    </div>
+    <div class="card"><p class="section-title">Zikrlar ro'yxati</p>
+    <table><thead><tr><th>Matn</th><th>Turi</th><th>Holat</th><th></th></tr></thead>
+    <tbody>${zikrs.map(z=>`
+      <tr><td>${escapeHtml(z.text)}</td><td>${z.is_default?'Standart':'Qo\'shimcha'}</td>
+      <td>${z.is_active?'Faol':'Faol emas'}</td>
+      <td>${z.is_default?'':`<button class="btn small danger" onclick="deleteZikr(${z.id})">O'chirish</button>`}</td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+async function addZikr(){
+  const text = document.getElementById("newZikrText").value.trim();
+  if(!text) return;
+  await api("/zikrs", {method:"POST", body: JSON.stringify({text})});
+  render();
+}
+async function deleteZikr(id){
+  if(!confirm("O'chirishni tasdiqlaysizmi?")) return;
+  await api(`/zikrs/${id}`, {method:"DELETE"});
+  render();
+}
+
+async function renderSubmissions(el){
+  const subs = await api("/zikr-submissions?status=pending");
+  el.innerHTML = `<div class="card"><p class="section-title">Kutilayotgan zikrlar</p>
+    ${subs.length===0? '<p style="color:var(--muted)">Kutilayotgan yo\'q</p>' : subs.map(s=>`
+      <div class="card" style="background:var(--panel)">
+        <p>${escapeHtml(s.original_text)}</p>
+        <textarea id="finalText_${s.id}" placeholder="Yakuniy matn (bo'sh qoldirsa asl matn ishlatiladi)"></textarea>
+        <div class="row">
+          <button class="btn" onclick="reviewSubmission(${s.id}, 'approve')">Tasdiqlash</button>
+          <button class="btn danger" onclick="reviewSubmission(${s.id}, 'reject')">Rad etish</button>
+        </div>
+      </div>`).join("")}
+  </div>`;
+}
+async function reviewSubmission(id, action){
+  const final_text = document.getElementById(`finalText_${id}`).value.trim() || null;
+  await api(`/zikr-submissions/${id}/review`, {method:"POST", body: JSON.stringify({action, final_text})});
+  render();
+}
+
+async function renderPublicChat(el){
+  const chat = await api("/public-chat");
+  el.innerHTML = `<div class="card"><p class="section-title">Ommaviy chat</p>
+    <label>Nomi</label><input id="chatTitle" value="${chat? escapeHtml(chat.title):''}" />
+    <label>Havola</label><input id="chatLink" value="${chat? escapeHtml(chat.link):''}" placeholder="https://t.me/..." />
+    <div class="row">
+      <button class="btn" onclick="savePublicChat()">Saqlash</button>
+      ${chat? '<button class="btn danger" onclick="deletePublicChat()">O\'chirish</button>':''}
+    </div>
+  </div>`;
+}
+async function savePublicChat(){
+  const title = document.getElementById("chatTitle").value.trim();
+  const link = document.getElementById("chatLink").value.trim();
+  await api(`/public-chat?title=${encodeURIComponent(title)}&link=${encodeURIComponent(link)}`, {method:"POST"});
+  render();
+}
+async function deletePublicChat(){
+  await api("/public-chat", {method:"DELETE"});
+  render();
+}
+
+async function renderHelpers(el){
+  const helpers = await api("/help-users");
+  el.innerHTML = `
+    <div class="card"><p class="section-title">Yordamchi qo'shish</p>
+      <label>Telegram username</label><input id="newHelperUsername" placeholder="username" />
+      <label>Ko'rsatiladigan ism</label><input id="newHelperName" />
+      <button class="btn" onclick="addHelper()">Qo'shish</button>
+    </div>
+    <div class="card"><p class="section-title">Yordamchilar</p>
+    <table><thead><tr><th>Ism</th><th>Username</th><th></th></tr></thead>
+    <tbody>${helpers.map(h=>`
+      <tr><td>${escapeHtml(h.display_name||'-')}</td><td>@${escapeHtml(h.telegram_username)}</td>
+      <td><button class="btn small danger" onclick="deleteHelper(${h.id})">O'chirish</button></td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+async function addHelper(){
+  const telegram_username = document.getElementById("newHelperUsername").value.trim();
+  const display_name = document.getElementById("newHelperName").value.trim();
+  if(!telegram_username) return;
+  await api(`/help-users?telegram_username=${encodeURIComponent(telegram_username)}&display_name=${encodeURIComponent(display_name)}`, {method:"POST"});
+  render();
+}
+async function deleteHelper(id){
+  await api(`/help-users/${id}`, {method:"DELETE"});
+  render();
+}
+
+async function renderRewardCards(el){
+  const cards = await api("/reward-cards");
+  el.innerHTML = `
+    <div class="card"><p class="section-title">Karta qo'shish (maks. 10 ta)</p>
+      <label>Karta raqami</label><input id="cardNumber" />
+      <label>Karta egasi</label><input id="cardHolder" />
+      <label>Karta turi</label><input id="cardType" placeholder="Masalan: Uzcard" />
+      <label>Qo'shimcha ma'lumot</label><textarea id="cardExtra"></textarea>
+      <button class="btn" onclick="addRewardCard()">Qo'shish</button>
+    </div>
+    <div class="card"><p class="section-title">Kartalar (${cards.length}/10)</p>
+    ${cards.map(c=>`
+      <div class="card" style="background:var(--panel)">
+        <p><b>${escapeHtml(c.card_number)}</b><br>${escapeHtml(c.holder_name)} ${c.card_type? '· '+escapeHtml(c.card_type):''}</p>
+        <button class="btn small danger" onclick="deleteRewardCard(${c.id})">O'chirish</button>
+      </div>`).join("")}
+    </div>`;
+}
+async function addRewardCard(){
+  const payload = {
+    card_number: document.getElementById("cardNumber").value.trim(),
+    holder_name: document.getElementById("cardHolder").value.trim(),
+    card_type: document.getElementById("cardType").value.trim(),
+    extra_info: document.getElementById("cardExtra").value.trim(),
+  };
+  if(!payload.card_number || !payload.holder_name) return alert("Karta raqami va egasi majburiy");
+  await api("/reward-cards", {method:"POST", body: JSON.stringify(payload)});
+  render();
+}
+async function deleteRewardCard(id){
+  await api(`/reward-cards/${id}`, {method:"DELETE"});
+  render();
+}
+
+async function renderCampaigns(el){
+  const campaigns = await api("/campaigns");
+  el.innerHTML = `
+    <div class="card"><p class="section-title">Yangi mukofot kampaniyasi</p>
+      <label>Sarlavha</label><input id="campTitle" />
+      <label>Tavsif</label><textarea id="campDesc"></textarea>
+      <label>Boshlanish sanasi</label><input id="campStart" type="date" />
+      <label>Tugash sanasi</label><input id="campEnd" type="date" />
+      <label>G'oliblar soni (1-10)</label><input id="campWinners" type="number" min="1" max="10" value="3" />
+      <label>Mukofot taqsimoti</label><textarea id="campPrizes" placeholder="TOP-1 - 50 000 so'm"></textarea>
+      <label>Ogohlantirish matni</label><textarea id="campWarning"></textarea>
+      <button class="btn" onclick="createCampaign()">Yaratish</button>
+    </div>
+    <div class="card"><p class="section-title">Kampaniyalar</p>
+    <table><thead><tr><th>Sarlavha</th><th>Muddat</th><th>G'oliblar</th><th>Holat</th></tr></thead>
+    <tbody>${campaigns.map(c=>`
+      <tr><td>${escapeHtml(c.title)}</td><td>${c.start_date} - ${c.end_date}</td><td>${c.winners_count}</td>
+      <td><span class="badge ${c.status==='active'?'approved':c.status==='pending_approval'?'pending':'rejected'}">${c.status}</span></td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+async function createCampaign(){
+  const payload = {
+    title: document.getElementById("campTitle").value.trim(),
+    description: document.getElementById("campDesc").value.trim(),
+    start_date: document.getElementById("campStart").value,
+    end_date: document.getElementById("campEnd").value,
+    winners_count: parseInt(document.getElementById("campWinners").value) || 3,
+    prize_breakdown: document.getElementById("campPrizes").value.trim(),
+    warning: document.getElementById("campWarning").value.trim(),
+  };
+  if(!payload.title || !payload.start_date || !payload.end_date) return alert("Sarlavha va sanalarni to'ldiring");
+  await api("/campaigns", {method:"POST", body: JSON.stringify(payload)});
+  render();
+}
+
+async function renderSettings(el){
+  const w = await api("/settings/reward_help_warning");
+  el.innerHTML = `<div class="card"><p class="section-title">Mukofot uchun yordam - ogohlantirish matni</p>
+    <textarea id="warningText" rows="5">${w.value? escapeHtml(w.value):''}</textarea>
+    <button class="btn" onclick="saveWarning()">Saqlash</button>
+  </div>`;
+}
+async function saveWarning(){
+  const value = document.getElementById("warningText").value;
+  await api(`/settings/reward_help_warning?value=${encodeURIComponent(value)}`, {method:"POST"});
+  alert("Saqlandi");
+}
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.textContent = str ?? "";
+  return d.innerHTML;
+}
+
+boot();
+</script>
+</body>
+</html>
