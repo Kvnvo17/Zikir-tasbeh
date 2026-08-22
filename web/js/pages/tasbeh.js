@@ -23,8 +23,8 @@ window.TasbehPage = (function () {
         <span id="goalText">0 / 1000</span>
       </div>
 
-      <div class="zikr-select-row">
-        <span class="zikr-name" id="zikrName">Yuklanmoqda...</span>
+      <div class="zikr-select-row"> 
+      <h2 class="zikr-title" id="zikrName">Yuklanmoqda...</h2>
         <button class="zikr-change-btn" id="changeZikrBtn">O'zgartirish</button>
       </div>
 
