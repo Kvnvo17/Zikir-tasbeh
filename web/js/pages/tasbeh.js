@@ -146,7 +146,11 @@ window.TasbehPage = (function () {
     updateCountUI(document.getElementById("page-root"));
 
     if (Counter.isComplete(state.value, state.mode)) {
-      TasbehAnimation.complete(btnEl);
+      TasbehAnimation.pulse(btnEl);
+
+btnEl.classList.remove("bead");
+void btnEl.offsetWidth;
+btnEl.classList.add("bead");
       TG.haptic("success");
     }
 
