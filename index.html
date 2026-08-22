@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>Zikr &amp; Tasbeh</title>
+<link rel="stylesheet" href="css/main.css" />
+<link rel="stylesheet" href="css/themes.css" />
+<link rel="stylesheet" href="css/tasbeh.css" />
+<link rel="stylesheet" href="css/rating.css" />
+<link rel="stylesheet" href="css/zikr.css" />
+<link rel="stylesheet" href="css/profile.css" />
+<link rel="stylesheet" href="css/animations.css" />
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+
+<div id="app" class="app">
+  <main id="page-root" class="page-root"></main>
+
+  <nav id="bottom-nav" class="bottom-nav safe-area-bottom">
+    <button class="nav-btn active" data-page="tasbeh">
+      <span class="nav-icon">📿</span><span class="nav-label">Tasbeh</span>
+    </button>
+    <button class="nav-btn" data-page="rating">
+      <span class="nav-icon">🏆</span><span class="nav-label">Reyting</span>
+    </button>
+    <button class="nav-btn" data-page="zikr_add">
+      <span class="nav-icon">✨</span><span class="nav-label">Zikr qo'shish</span>
+    </button>
+    <button class="nav-btn" data-page="profile">
+      <span class="nav-icon">👤</span><span class="nav-label">Profil</span>
+    </button>
+  </nav>
+</div>
+
+<div id="toast-root" class="toast-root"></div>
+<div id="modal-root" class="modal-root"></div>
+<div id="loader-root" class="loader-root hidden"><div class="loader-spinner"></div></div>
+
+<script src="js/telegram.js"></script>
+<script src="js/api.js"></script>
+<script src="js/components/toast.js"></script>
+<script src="js/components/modal.js"></script>
+<script src="js/components/loader.js"></script>
+<script src="js/components/navigation.js"></script>
+<script src="js/features/counter.js"></script>
+<script src="js/features/tasbeh_animation.js"></script>
+<script src="js/features/zikr_selector.js"></script>
+<script src="js/features/statistics.js"></script>
+<script src="js/features/achievements.js"></script>
+<script src="js/features/streak.js"></script>
+<script src="js/features/referrals.js"></script>
+<script src="js/features/reminders.js"></script>
+<script src="js/features/rewards.js"></script>
+<script src="js/pages/tasbeh.js"></script>
+<script src="js/pages/rating.js"></script>
+<script src="js/pages/zikr_add.js"></script>
+<script src="js/pages/profile.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
