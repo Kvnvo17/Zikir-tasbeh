@@ -1,24 +1,76 @@
 async function onTap(btnEl) {
 
-  // Keyingi son
-  state.value =
-    Counter.nextValue(
-      state.value,
-      state.mode
-    );
+  // ========================================
+  // HOZIRGI QIYMATNI SAQLASH
+  // ========================================
+
+  const oldValue = state.value;
 
 
-  // Bosilgandagi yumshoq animatsiya
+  // ========================================
+  // 33 / 99 MAQSAD
+  // ========================================
+
+  let target = null;
+
+  if (state.mode === "33") {
+    target = 33;
+  }
+
+  if (state.mode === "99") {
+    target = 99;
+  }
+
+
+  // ========================================
+  // OXIRGI SONMI?
+  // ========================================
+
+  const completed =
+    target !== null &&
+    oldValue === target - 1;
+
+
+  // ========================================
+  // KEYINGI SON
+  // ========================================
+
+  if (completed) {
+
+    // 33 yoki 99 tugadi
+    state.value = 0;
+
+  } else {
+
+    state.value =
+      Counter.nextValue(
+        state.value,
+        state.mode
+      );
+
+  }
+
+
+  // ========================================
+  // YUMSHOQ ANIMATSIYA
+  // ========================================
+
   TasbehAnimation.pulse(
     btnEl
   );
 
 
-  // Telefon vibratsiyasi
+  // ========================================
+  // VIBRATSIYA
+  // ========================================
+
   TG.haptic("light");
 
 
-  // Sonni yangilash
+  // ========================================
+  // SONNI YANGILASH
+  // ========================================
+
   updateCountUI(
     document.getElementById(
       "page-root"
@@ -30,21 +82,14 @@ async function onTap(btnEl) {
   // 33 / 99 YAKUNLANGANDA
   // ========================================
 
-  const completed =
-    Counter.isComplete(
-      state.value,
-      state.mode
-    );
-
-
   if (completed) {
 
-    // Eski yakuniy animatsiya
+    // Yakuniy animatsiya
     TasbehAnimation.complete(
       btnEl
     );
 
-    // Eski kuchli vibratsiya
+    // Kuchli vibratsiya
     TG.haptic("success");
 
   }
@@ -68,17 +113,38 @@ async function onTap(btnEl) {
 
     .then((result) => {
 
-      state.todayCount =
-        result.today_count;
+      if (
+        result.today_count !==
+        undefined
+      ) {
 
-      state.weekCount =
-        result.week_count;
+        state.todayCount =
+          result.today_count;
 
-      state.dailyGoal =
-        result.daily_goal;
+      }
 
-      state.weekCount =
-        result.week_count;
+
+      if (
+        result.week_count !==
+        undefined
+      ) {
+
+        state.weekCount =
+          result.week_count;
+
+      }
+
+
+      if (
+        result.daily_goal !==
+        undefined
+      ) {
+
+        state.dailyGoal =
+          result.daily_goal;
+
+      }
+
 
       updateStatsUI();
 
@@ -96,6 +162,7 @@ async function onTap(btnEl) {
 
   // ========================================
   // FAQAT 33 VA 99 REJIMIDA
+  // KEYINGI ZIKRGA O'TISH
   // ========================================
 
   if (
@@ -107,32 +174,124 @@ async function onTap(btnEl) {
   ) {
 
     setTimeout(
-      () => {
+      async () => {
 
-        // 0 ga qaytarish
-        state.value = 0;
+        try {
+
+          // Barcha zikrlarni olamiz
+          const zikrs =
+            await API.get(
+              "/zikr"
+            );
 
 
-        // Keyingi zikr
-        if (
-          state.zikr &&
-          typeof state.zikr.next === "function"
-        ) {
+          // Zikrlar mavjudligini tekshiramiz
+          if (
+            !Array.isArray(zikrs) ||
+            zikrs.length === 0
+          ) {
+
+            console.warn(
+              "Zikrlar topilmadi"
+            );
+
+            return;
+
+          }
+
+
+          // ==================================
+          // HOZIRGI ZIKRNI TOPISH
+          // ==================================
+
+          const currentIndex =
+            zikrs.findIndex(
+              (z) =>
+                state.zikr &&
+                z.id === state.zikr.id
+            );
+
+
+          // ==================================
+          // KEYINGI ZIKR INDEXI
+          // ==================================
+
+          let nextIndex = 0;
+
+
+          if (
+            currentIndex >= 0
+          ) {
+
+            nextIndex =
+              (
+                currentIndex + 1
+              ) %
+              zikrs.length;
+
+          }
+
+
+          // ==================================
+          // KEYINGI ZIKR
+          // ==================================
 
           state.zikr =
-            state.zikr.next();
+            zikrs[nextIndex];
+
+
+          // ==================================
+          // HISOBNI 0 QILISH
+          // ==================================
+
+          state.value = 0;
+
+
+          // ==================================
+          // UI YANGILASH
+          // ==================================
+
+          updateStatsUI();
+
+          updateCountUI(
+            document.getElementById(
+              "page-root"
+            )
+          );
+
+
+          // ==================================
+          // VIBRATSIYA
+          // ==================================
+
+          TG.haptic(
+            "success"
+          );
+
+
+          // ==================================
+          // TOAST
+          // ==================================
+
+          if (
+            typeof Toast !==
+            "undefined"
+          ) {
+
+            Toast.show(
+              `Keyingi zikr: ${state.zikr.text}`
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Keyingi zikrni almashtirishda xatolik:",
+            error
+          );
 
         }
-
-
-        updateStatsUI();
-
-
-        updateCountUI(
-          document.getElementById(
-            "page-root"
-          )
-        );
 
       },
       500
