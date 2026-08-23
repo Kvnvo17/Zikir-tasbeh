@@ -6,7 +6,6 @@ window.Referrals = (function () {
     // your_bot ni ZikrBogiBot ga almashtirish
     if (info && info.link) {
       info.link = info.link.replace(
-        "https://t.me/your_bot",
         "https://t.me/ZikrBogiBot"
       );
     }
