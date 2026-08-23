@@ -21,12 +21,10 @@
 .mini-stat {
   flex: 1;
   min-width: 0;
-  background: linear-gradient(
-    145deg,
-    rgba(31, 41, 55, 0.96),
-    rgba(17, 24, 39, 0.96)
-  );
-  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(31, 41, 55, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 18px;
   padding: 15px 10px;
   text-align: center;
@@ -42,7 +40,7 @@
 
 .mini-stat .l {
   margin-top: 5px;
-  color: #9ca3af;
+  color: #c5c7cc;
   font-size: 13px;
   font-weight: 500;
 }
@@ -55,13 +53,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-
   width: 100%;
   box-sizing: border-box;
 
-  background: rgba(27, 35, 51, 0.96);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(27, 35, 51, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
   padding: 12px 13px;
   margin-bottom: 14px;
@@ -86,7 +85,7 @@
   height: 9px;
   overflow: hidden;
 
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.10);
   border-radius: 999px;
 }
 
@@ -96,8 +95,9 @@
 
   background: linear-gradient(
     90deg,
-    #22c55e,
-    #34d399
+    #c99545,
+    #e0b866,
+    #b87a32
   );
 
   border-radius: inherit;
@@ -109,13 +109,13 @@
   min-width: 70px;
   text-align: right;
 
-  color: #d1d5db;
+  color: #e5e7eb;
   font-size: 12px;
   font-weight: 700;
 }
 
 /* =========================================================
-   ZIKR TANLASH KARTASI
+   ZIKR TANLASH
    ========================================================= */
 
 .zikr-select-row {
@@ -124,15 +124,11 @@
   justify-content: space-between;
   gap: 12px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(30, 41, 59, 0.98),
-      rgba(15, 23, 42, 0.98)
-    );
+  background: rgba(30, 41, 59, 0.62);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
-  border: 1px solid rgba(255,255,255,0.06);
-
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 18px;
   padding: 15px;
 
@@ -147,7 +143,7 @@
 }
 
 .zikr-small-label {
-  color: #94a3b8;
+  color: #b8bec8;
   font-size: 12px;
   margin-bottom: 5px;
 }
@@ -168,15 +164,15 @@
 .zikr-change-btn {
   flex-shrink: 0;
 
-  border: 0;
+  border: 1px solid rgba(255,255,255,0.08);
   outline: none;
 
   padding: 9px 13px;
 
   border-radius: 12px;
 
-  background: rgba(59, 130, 246, 0.16);
-  color: #60a5fa;
+  background: rgba(201,149,69,0.16);
+  color: #e0b866;
 
   font-size: 12px;
   font-weight: 700;
@@ -190,7 +186,7 @@
 
 .zikr-change-btn:active {
   transform: scale(0.94);
-  background: rgba(59, 130, 246, 0.25);
+  background: rgba(201,149,69,0.28);
 }
 
 /* =========================================================
@@ -202,12 +198,13 @@
   gap: 8px;
 
   padding: 5px;
-
   margin: 14px 0 20px;
 
-  background: rgba(17, 24, 39, 0.9);
-  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(17, 24, 39, 0.58);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 15px;
 }
 
@@ -222,7 +219,7 @@
   border-radius: 11px;
 
   background: transparent;
-  color: #94a3b8;
+  color: #aeb6c3;
 
   font-size: 15px;
   font-weight: 800;
@@ -240,17 +237,12 @@
 }
 
 .mode-tab.active {
-  color: #ffffff;
+  color: #fff7df;
 
-  background:
-    linear-gradient(
-      135deg,
-      #2563eb,
-      #3b82f6
-    );
+  background: rgba(201,149,69,0.55);
 
   box-shadow:
-    0 5px 18px rgba(37,99,235,0.28);
+    0 5px 18px rgba(160,110,40,0.22);
 }
 
 /* =========================================================
@@ -266,7 +258,7 @@
 }
 
 /* =========================================================
-   TASBEH BUTTON
+   TASBEH BUTTON — MALLA / SHAFFOF GLASS
    ========================================================= */
 
 .tasbeh-btn {
@@ -283,7 +275,7 @@
 
   padding: 0;
 
-  border: 0;
+  border: 1px solid rgba(255,220,160,0.22);
   outline: none;
 
   border-radius: 50%;
@@ -292,20 +284,29 @@
 
   background:
     radial-gradient(
-      circle at 35% 30%,
-      rgba(255,255,255,0.13),
-      transparent 30%
+      circle at 32% 25%,
+      rgba(255,235,190,0.32),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 70% 75%,
+      rgba(130,82,25,0.30),
+      transparent 45%
     ),
     linear-gradient(
       145deg,
-      #172033,
-      #0f172a
+      rgba(205,157,78,0.72),
+      rgba(137,91,37,0.64)
     );
 
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
   box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.06),
-    inset 0 -8px 20px rgba(0,0,0,0.25),
-    0 18px 45px rgba(0,0,0,0.30);
+    inset 0 2px 0 rgba(255,255,255,0.18),
+    inset 0 -12px 25px rgba(75,43,15,0.25),
+    0 18px 45px rgba(0,0,0,0.30),
+    0 0 35px rgba(196,145,66,0.12);
 
   -webkit-tap-highlight-color: transparent;
 
@@ -318,13 +319,14 @@
   transform: scale(0.965);
 
   box-shadow:
-    inset 0 2px 0 rgba(255,255,255,0.04),
-    inset 0 -5px 15px rgba(0,0,0,0.3),
-    0 10px 28px rgba(0,0,0,0.25);
+    inset 0 2px 0 rgba(255,255,255,0.10),
+    inset 0 -8px 18px rgba(70,40,12,0.30),
+    0 10px 28px rgba(0,0,0,0.25),
+    0 0 28px rgba(196,145,66,0.18);
 }
 
 /* =========================================================
-   TASHQI AYLANMA HALQA
+   TASHQI HALQA
    ========================================================= */
 
 .tasbeh-progress-ring {
@@ -336,10 +338,10 @@
 
   background:
     conic-gradient(
-      #3b82f6 0deg,
-      #3b82f6 var(--tasbeh-progress, 0deg),
-      rgba(255,255,255,0.08) var(--tasbeh-progress, 0deg),
-      rgba(255,255,255,0.08) 360deg
+      #f0c66d 0deg,
+      #d39b42 var(--tasbeh-progress, 0deg),
+      rgba(255,255,255,0.12) var(--tasbeh-progress, 0deg),
+      rgba(255,255,255,0.12) 360deg
     );
 
   padding: 9px;
@@ -352,11 +354,9 @@
   pointer-events: none;
 }
 
-/*
-  Ichki qora/dark doira.
-  JS ringFill kengligini boshqarganda ham
-  halqa buzilib ketmasligi uchun.
-*/
+/* =========================================================
+   ICHKI DOIRA
+   ========================================================= */
 
 .tasbeh-progress-ring::after {
   content: "";
@@ -370,14 +370,14 @@
   background:
     radial-gradient(
       circle at 35% 30%,
-      #263248,
-      #111827 65%,
-      #0b1220
+      rgba(230,190,115,0.78),
+      rgba(157,105,42,0.70) 60%,
+      rgba(91,58,23,0.72)
     );
 
   box-shadow:
-    inset 0 2px 8px rgba(255,255,255,0.04),
-    inset 0 -8px 18px rgba(0,0,0,0.25);
+    inset 0 2px 8px rgba(255,255,255,0.08),
+    inset 0 -8px 18px rgba(50,30,10,0.25);
 
   z-index: 0;
 }
@@ -407,11 +407,6 @@
     width 0.3s ease;
 }
 
-/*
-  JS TasbehAnimation.setRing() ishlatilsa,
-  quyidagi custom property orqali ham ishlashi mumkin.
-*/
-
 .tasbeh-btn[data-progress="100"] .tasbeh-progress-ring {
   animation: tasbehCompleteRing 0.7s ease;
 }
@@ -430,7 +425,7 @@
 
   z-index: 5;
 
-  color: #ffffff;
+  color: #fff8e8;
 
   font-size: clamp(48px, 14vw, 72px);
 
@@ -441,7 +436,7 @@
   letter-spacing: -2px;
 
   text-shadow:
-    0 3px 15px rgba(0,0,0,0.35);
+    0 3px 15px rgba(50,30,10,0.45);
 
   pointer-events: none;
 
@@ -451,7 +446,7 @@
 }
 
 /* =========================================================
-   TASBEH BOSILGANDA SON ANIMATSIYASI
+   SON ANIMATSIYASI
    ========================================================= */
 
 .tasbeh-btn.tap-pop .tasbeh-count {
@@ -476,7 +471,7 @@
 }
 
 /* =========================================================
-   TASBEH PULSE
+   PULSE
    ========================================================= */
 
 .tasbeh-btn.pulse {
@@ -498,7 +493,7 @@
 }
 
 /* =========================================================
-   33 / 99 YETGANDA
+   33 / 99 COMPLETE
    ========================================================= */
 
 .tasbeh-btn.bead {
@@ -508,15 +503,14 @@
 @keyframes tasbehComplete {
   0% {
     transform: scale(1);
-    box-shadow:
-      0 18px 45px rgba(0,0,0,0.30);
   }
 
   35% {
     transform: scale(1.06);
+
     box-shadow:
-      0 0 0 10px rgba(59,130,246,0.08),
-      0 0 35px rgba(59,130,246,0.35);
+      0 0 0 10px rgba(224,184,102,0.08),
+      0 0 35px rgba(224,184,102,0.35);
   }
 
   70% {
@@ -525,8 +519,6 @@
 
   100% {
     transform: scale(1);
-    box-shadow:
-      0 18px 45px rgba(0,0,0,0.30);
   }
 }
 
@@ -558,7 +550,7 @@
 .tasbeh-hint {
   margin-top: 18px;
 
-  color: #94a3b8;
+  color: #c2b8a4;
 
   font-size: 13px;
   font-weight: 500;
@@ -604,7 +596,6 @@
     min-width: 245px;
     min-height: 245px;
   }
-
 }
 
 /* =========================================================
@@ -613,7 +604,7 @@
 
 body.light .mini-stat,
 body.light .zikr-select-row {
-  background: #ffffff;
+  background: rgba(255,255,255,0.65);
   border-color: rgba(0,0,0,0.06);
 }
 
@@ -623,11 +614,11 @@ body.light .zikr-title {
 }
 
 body.light .goal-row {
-  background: #ffffff;
+  background: rgba(255,255,255,0.65);
 }
 
 body.light .mode-tabs {
-  background: #f1f5f9;
+  background: rgba(241,245,249,0.65);
 }
 
 body.light .mode-tab {
