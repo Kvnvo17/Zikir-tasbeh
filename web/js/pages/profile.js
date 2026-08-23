@@ -1,5 +1,5 @@
-indoww.ProfilePage = (function () {
-  const THEMES = ["default", "emerald", "amber", "rose", "indigo", "graphite"];
+window.ProfilePage = (function () {
+  
   let historyRange = "7d";
   let me = null;
 
