@@ -38,3 +38,12 @@ body {
 .btn.accent-tasbeh-bg { background: linear-gradient(135deg, #29c9a0, #1f8f80); }
 .btn.accent-rating-bg { background: linear-gradient(135deg, #9a6bff, #6a3fd8); }
 .btn.accent-zikr-bg { background: linear-gradient(135deg, #4f8dff, #3358d8); }
+
+.theme-tasbeh {
+    background-image: url("../tasbeh-bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+} 
