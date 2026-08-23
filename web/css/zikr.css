@@ -41,3 +41,9 @@ textarea.zikr-textarea {
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   font-size: 13px;
 }
+
+.zikr-text{
+  max-height: 45vh;
+  overflow-y: auto;
+  white-space: pre-wrap;
+} 
