@@ -41,11 +41,7 @@ window.ProfilePage = (function () {
         <p class="section-title">\u{1F3C5} Yutuqlarim</p>
         <div id="achievementsBox"><div class="empty-state">Yuklanmoqda...</div></div>
       </div>
-
-      <div class="glass-card" style="margin-bottom:14px">
-        <p class="section-title">\u{1F3A8} Tasbeh ko'rinishi</p>
-        <div class="theme-grid" id="themeGrid"></div>
-      </div>
+      
 
       <div class="glass-card">
         <div class="profile-list-item" id="referralItem"><span>\u{1F465} Do'stlarni taklif qilish</span><span class="chev">\u203A</span></div>
