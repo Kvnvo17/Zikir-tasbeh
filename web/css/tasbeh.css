@@ -9,7 +9,7 @@
 }
 
 /* =========================================================
-   STATISTIKA
+   STATISTIKA — SHAFFOF
    ========================================================= */
 
 .mini-stats {
@@ -21,14 +21,27 @@
 .mini-stat {
   flex: 1;
   min-width: 0;
-  background: rgba(31, 41, 55, 0.62);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.08);
+
+  background: rgba(20, 25, 30, 0.30);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 18px;
+
   padding: 15px 10px;
   text-align: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.12);
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.mini-stat:active {
+  transform: scale(0.98);
 }
 
 .mini-stat .v {
@@ -40,28 +53,30 @@
 
 .mini-stat .l {
   margin-top: 5px;
-  color: #c5c7cc;
+  color: rgba(255,255,255,0.68);
   font-size: 13px;
   font-weight: 500;
 }
 
 /* =========================================================
-   KUNLIK MAQSAD
+   KUNLIK MAQSAD — SHAFFOF
    ========================================================= */
 
 .goal-row {
   display: flex;
   align-items: center;
   gap: 10px;
+
   width: 100%;
   box-sizing: border-box;
 
-  background: rgba(27, 35, 51, 0.62);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(20, 25, 30, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 16px;
+
   padding: 12px 13px;
   margin-bottom: 14px;
 
@@ -82,6 +97,7 @@
 .goal-bar {
   position: relative;
   flex: 1;
+
   height: 9px;
   overflow: hidden;
 
@@ -93,29 +109,32 @@
   height: 100%;
   width: 0%;
 
-  background: linear-gradient(
-    90deg,
-    #c99545,
-    #e0b866,
-    #b87a32
-  );
+  background:
+    linear-gradient(
+      90deg,
+      #b9853c,
+      #e0b866,
+      #c18a3f
+    );
 
   border-radius: inherit;
 
-  transition: width 0.45s cubic-bezier(.22,1,.36,1);
+  transition:
+    width 0.45s cubic-bezier(.22,1,.36,1);
 }
 
 #goalText {
   min-width: 70px;
   text-align: right;
 
-  color: #e5e7eb;
+  color: rgba(255,255,255,0.82);
+
   font-size: 12px;
   font-weight: 700;
 }
 
 /* =========================================================
-   ZIKR TANLASH
+   ZIKR TANLASH — SHAFFOF
    ========================================================= */
 
 .zikr-select-row {
@@ -124,17 +143,18 @@
   justify-content: space-between;
   gap: 12px;
 
-  background: rgba(30, 41, 59, 0.62);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(20, 25, 30, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 18px;
-  padding: 15px;
 
+  padding: 15px;
   margin: 14px 0;
 
-  box-shadow: 0 10px 28px rgba(0,0,0,0.14);
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.12);
 }
 
 .zikr-display {
@@ -143,7 +163,8 @@
 }
 
 .zikr-small-label {
-  color: #b8bec8;
+  color: rgba(255,255,255,0.62);
+
   font-size: 12px;
   margin-bottom: 5px;
 }
@@ -152,6 +173,7 @@
   margin: 0;
 
   color: #ffffff;
+
   font-size: 19px;
   line-height: 1.3;
   font-weight: 800;
@@ -161,17 +183,21 @@
   white-space: nowrap;
 }
 
+/* =========================================================
+   ZIKR O'ZGARTIRISH TUGMASI
+   ========================================================= */
+
 .zikr-change-btn {
   flex-shrink: 0;
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(224,184,102,0.22);
   outline: none;
 
   padding: 9px 13px;
 
   border-radius: 12px;
 
-  background: rgba(201,149,69,0.16);
+  background: rgba(201,149,69,0.15);
   color: #e0b866;
 
   font-size: 12px;
@@ -186,11 +212,13 @@
 
 .zikr-change-btn:active {
   transform: scale(0.94);
-  background: rgba(201,149,69,0.28);
+
+  background:
+    rgba(201,149,69,0.28);
 }
 
 /* =========================================================
-   33 / 99 / ∞
+   33 / 99 / ∞ — SHAFFOF
    ========================================================= */
 
 .mode-tabs {
@@ -200,11 +228,11 @@
   padding: 5px;
   margin: 14px 0 20px;
 
-  background: rgba(17, 24, 39, 0.58);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(20,25,30,0.26);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 15px;
 }
 
@@ -219,7 +247,8 @@
   border-radius: 11px;
 
   background: transparent;
-  color: #aeb6c3;
+
+  color: rgba(255,255,255,0.60);
 
   font-size: 15px;
   font-weight: 800;
@@ -239,10 +268,11 @@
 .mode-tab.active {
   color: #fff7df;
 
-  background: rgba(201,149,69,0.55);
+  background:
+    rgba(201,149,69,0.52);
 
   box-shadow:
-    0 5px 18px rgba(160,110,40,0.22);
+    0 5px 18px rgba(160,110,40,0.20);
 }
 
 /* =========================================================
@@ -258,7 +288,7 @@
 }
 
 /* =========================================================
-   TASBEH BUTTON — MALLA / SHAFFOF GLASS
+   TASBEH BUTTON — MALLA / SHAFFOF
    ========================================================= */
 
 .tasbeh-btn {
@@ -275,7 +305,7 @@
 
   padding: 0;
 
-  border: 1px solid rgba(255,220,160,0.22);
+  border: 1px solid rgba(255,220,160,0.25);
   outline: none;
 
   border-radius: 50%;
@@ -284,14 +314,14 @@
 
   background:
     radial-gradient(
-      circle at 32% 25%,
-      rgba(255,235,190,0.32),
+      circle at 30% 24%,
+      rgba(255,240,200,0.34),
       transparent 25%
     ),
     radial-gradient(
       circle at 70% 75%,
-      rgba(130,82,25,0.30),
-      transparent 45%
+      rgba(100,60,20,0.30),
+      transparent 48%
     ),
     linear-gradient(
       145deg,
@@ -340,7 +370,8 @@
     conic-gradient(
       #f0c66d 0deg,
       #d39b42 var(--tasbeh-progress, 0deg),
-      rgba(255,255,255,0.12) var(--tasbeh-progress, 0deg),
+      rgba(255,255,255,0.12)
+        var(--tasbeh-progress, 0deg),
       rgba(255,255,255,0.12) 360deg
     );
 
@@ -407,8 +438,10 @@
     width 0.3s ease;
 }
 
-.tasbeh-btn[data-progress="100"] .tasbeh-progress-ring {
-  animation: tasbehCompleteRing 0.7s ease;
+.tasbeh-btn[data-progress="100"]
+.tasbeh-progress-ring {
+  animation:
+    tasbehCompleteRing 0.7s ease;
 }
 
 /* =========================================================
@@ -450,22 +483,33 @@
    ========================================================= */
 
 .tasbeh-btn.tap-pop .tasbeh-count {
-  animation: tasbehNumberPop 0.22s ease;
+  animation:
+    tasbehNumberPop 0.22s ease;
 }
 
 @keyframes tasbehNumberPop {
+
   0% {
-    transform: translate(-50%, -50%) scale(0.82);
+    transform:
+      translate(-50%, -50%)
+      scale(0.82);
+
     opacity: 0.65;
   }
 
   55% {
-    transform: translate(-50%, -50%) scale(1.12);
+    transform:
+      translate(-50%, -50%)
+      scale(1.12);
+
     opacity: 1;
   }
 
   100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+
     opacity: 1;
   }
 }
@@ -475,10 +519,12 @@
    ========================================================= */
 
 .tasbeh-btn.pulse {
-  animation: tasbehPulse 0.25s ease;
+  animation:
+    tasbehPulse 0.25s ease;
 }
 
 @keyframes tasbehPulse {
+
   0% {
     transform: scale(1);
   }
@@ -497,10 +543,12 @@
    ========================================================= */
 
 .tasbeh-btn.bead {
-  animation: tasbehComplete 0.65s ease;
+  animation:
+    tasbehComplete 0.65s ease;
 }
 
 @keyframes tasbehComplete {
+
   0% {
     transform: scale(1);
   }
@@ -509,8 +557,10 @@
     transform: scale(1.06);
 
     box-shadow:
-      0 0 0 10px rgba(224,184,102,0.08),
-      0 0 35px rgba(224,184,102,0.35);
+      0 0 0 10px
+        rgba(224,184,102,0.08),
+      0 0 35px
+        rgba(224,184,102,0.35);
   }
 
   70% {
@@ -527,6 +577,7 @@
    ========================================================= */
 
 @keyframes tasbehCompleteRing {
+
   0% {
     transform: scale(1);
     filter: brightness(1);
@@ -550,7 +601,7 @@
 .tasbeh-hint {
   margin-top: 18px;
 
-  color: #c2b8a4;
+  color: rgba(255,255,255,0.62);
 
   font-size: 13px;
   font-weight: 500;
@@ -599,13 +650,15 @@
 }
 
 /* =========================================================
-   LIGHT BACKGROUND SUPPORT
+   LIGHT MODE
    ========================================================= */
 
 body.light .mini-stat,
 body.light .zikr-select-row {
-  background: rgba(255,255,255,0.65);
-  border-color: rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.40);
+
+  border-color:
+    rgba(0,0,0,0.08);
 }
 
 body.light .mini-stat .v,
@@ -614,11 +667,11 @@ body.light .zikr-title {
 }
 
 body.light .goal-row {
-  background: rgba(255,255,255,0.65);
+  background: rgba(255,255,255,0.40);
 }
 
 body.light .mode-tabs {
-  background: rgba(241,245,249,0.65);
+  background: rgba(255,255,255,0.35);
 }
 
 body.light .mode-tab {
@@ -627,4 +680,4 @@ body.light .mode-tab {
 
 body.light .tasbeh-hint {
   color: #64748b;
-}
+   }
