@@ -1,51 +1,32 @@
 window.TasbehAnimation = (function () {
 
-  function setRing(el, pct) {
-    if (!el) return;
+  function pulse(buttonEl) {
+    buttonEl.classList.remove("tasbeh-pop");
 
-    const parent = el.parentElement;
+    void buttonEl.offsetWidth;
 
-    if (parent) {
-      parent.style.setProperty(
-        "--progress",
-        Math.max(0, Math.min(100, pct)) + "%"
-      );
-    }
+    buttonEl.classList.add("tasbeh-pop");
   }
 
-  function pulse(btn) {
-    if (!btn) return;
+  function complete(buttonEl) {
+    buttonEl.classList.remove("tasbeh-complete");
 
-    btn.classList.remove("tasbeh-pulse");
+    void buttonEl.offsetWidth;
 
-    // Animatsiyani qayta ishga tushirish
-    void btn.offsetWidth;
-
-    btn.classList.add("tasbeh-pulse");
-
-    setTimeout(() => {
-      btn.classList.remove("tasbeh-pulse");
-    }, 180);
+    buttonEl.classList.add("tasbeh-complete");
   }
 
-  function complete(btn) {
-    if (!btn) return;
-
-    btn.classList.remove("tasbeh-complete");
-
-    void btn.offsetWidth;
-
-    btn.classList.add("tasbeh-complete");
-
-    setTimeout(() => {
-      btn.classList.remove("tasbeh-complete");
-    }, 600);
+  function setRing(ringFillEl, pct) {
+    ringFillEl.style.setProperty(
+      "--pct",
+      `${Math.max(0, Math.min(100, pct))}%`
+    );
   }
 
   return {
-    setRing,
     pulse,
-    complete
+    complete,
+    setRing
   };
 
 })();
