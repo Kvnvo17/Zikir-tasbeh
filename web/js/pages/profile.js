@@ -1,4 +1,4 @@
-window.ProfilePage = (function () {
+indoww.ProfilePage = (function () {
   const THEMES = ["default", "emerald", "amber", "rose", "indigo", "graphite"];
   let historyRange = "7d";
   let me = null;
@@ -50,7 +50,14 @@ window.ProfilePage = (function () {
     </div>`;
 
     bindEvents(root);
-    await Promise.all([loadHeader(), loadStats(), loadStreak(), loadHistory(root), loadAchievements(), renderThemes(root)]);
+    await Promise.all([
+  loadHeader(),
+  loadStats(),
+  loadStreak(),
+  loadHistory(root),
+  loadAchievements()
+]);
+    
   }
 
   function bindEvents(root) {
