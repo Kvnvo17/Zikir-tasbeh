@@ -1,49 +1,104 @@
 /* Each page wraps its content in .theme-<name> to pick up a gradient background
-   scoped to that section, per spec (tasbeh=green/turquoise, rating=purple,
-   zikr_add=blue, profile=dark/graphite). */
+   scoped to that section, per spec. */
 
 body {
   background: #0b0d12;
 }
 
 .theme-tasbeh {
-  background: radial-gradient(120% 80% at 20% 0%, #123330 0%, #0b0d12 55%),
-              radial-gradient(100% 60% at 90% 100%, #0f3d34 0%, transparent 60%);
-  min-height: 100%;
+  background:
+    linear-gradient(
+      rgba(11, 13, 18, 0.45),
+      rgba(11, 13, 18, 0.45)
+    ),
+    url("../tasbeh-bg.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  min-height: 100vh;
 }
 
 .theme-rating {
-  background: radial-gradient(120% 80% at 15% 0%, #2a1f4d 0%, #0b0d12 55%),
-              radial-gradient(100% 60% at 90% 100%, #3a2560 0%, transparent 60%);
+  background: radial-gradient(
+      120% 80% at 15% 0%,
+      #2a1f4d 0%,
+      #0b0d12 55%
+    ),
+    radial-gradient(
+      100% 60% at 90% 100%,
+      #3a2560 0%,
+      transparent 60%
+    );
   min-height: 100%;
 }
 
 .theme-zikr-add {
-  background: radial-gradient(120% 80% at 20% 0%, #10233f 0%, #0b0d12 55%),
-              radial-gradient(100% 60% at 90% 100%, #123457 0%, transparent 60%);
+  background: radial-gradient(
+      120% 80% at 20% 0%,
+      #10233f 0%,
+      #0b0d12 55%
+    ),
+    radial-gradient(
+      100% 60% at 90% 100%,
+      #123457 0%,
+      transparent 60%
+    );
   min-height: 100%;
 }
 
 .theme-profile {
-  background: radial-gradient(120% 80% at 20% 0%, #23262f 0%, #0b0d12 55%),
-              radial-gradient(100% 60% at 90% 100%, #1c1e26 0%, transparent 60%);
+  background: radial-gradient(
+      120% 80% at 20% 0%,
+      #23262f 0%,
+      #0b0d12 55%
+    ),
+    radial-gradient(
+      100% 60% at 90% 100%,
+      #1c1e26 0%,
+      transparent 60%
+    );
   min-height: 100%;
 }
 
-.accent-tasbeh { color: #4fd8b8; }
-.accent-rating { color: #b48bff; }
-.accent-zikr { color: #5b9dff; }
-.accent-profile { color: #c7cbe0; }
+.accent-tasbeh {
+  color: #4fd8b8;
+}
 
-.btn.accent-tasbeh-bg { background: linear-gradient(135deg, #29c9a0, #1f8f80); }
-.btn.accent-rating-bg { background: linear-gradient(135deg, #9a6bff, #6a3fd8); }
-.btn.accent-zikr-bg { background: linear-gradient(135deg, #4f8dff, #3358d8); }
+.accent-rating {
+  color: #b48bff;
+}
 
-.theme-tasbeh {
-    background-image: url("../tasbeh-bg.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-} 
+.accent-zikr {
+  color: #5b9dff;
+}
+
+.accent-profile {
+  color: #c7cbe0;
+}
+
+.btn.accent-tasbeh-bg {
+  background: linear-gradient(
+    135deg,
+    #29c9a0,
+    #1f8f80
+  );
+}
+
+.btn.accent-rating-bg {
+  background: linear-gradient(
+    135deg,
+    #9a6bff,
+    #6a3fd8
+  );
+}
+
+.btn.accent-zikr-bg {
+  background: linear-gradient(
+    135deg,
+    #4f8dff,
+    #3358d8
+  );
+}
