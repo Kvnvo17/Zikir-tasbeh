@@ -1,60 +1,32 @@
-window.TasbehAnimation = (function () {
+window.TasbehAnimation = {
 
-  function restartAnimation(element, className) {
-    if (!element) return;
+  pulse(btn){
+    btn.animate([
+      {transform:"scale(1)"},
+      {transform:"scale(.92)"},
+      {transform:"scale(1.08)"},
+      {transform:"scale(1)"}
+    ],{
+      duration:180,
+      easing:"ease-out"
+    });
+  },
 
-    element.classList.remove(className);
+  complete(btn){
+    btn.animate([
+      {transform:"scale(1) rotate(0deg)"},
+      {transform:"scale(1.15) rotate(-8deg)"},
+      {transform:"scale(.95) rotate(8deg)"},
+      {transform:"scale(1) rotate(0deg)"}
+    ],{
+      duration:450,
+      easing:"ease-out"
+    });
+  },
 
-    // Animatsiyani qayta ishga tushirish
-    void element.offsetWidth;
-
-    element.classList.add(className);
-
-    // Keyin klassni tozalash
-    setTimeout(() => {
-      element.classList.remove(className);
-    }, 700);
+  setRing(el,pct){
+    el.parentElement.style.background =
+      `conic-gradient(#22c55e ${pct}%, #1f2937 ${pct}%)`;
   }
 
-  // Har bir bosishda
-  function pulse(buttonEl) {
-    if (!buttonEl) return;
-
-    restartAnimation(buttonEl, "tasbeh-tap");
-
-    // Atrofida yumshoq halqa
-    restartAnimation(buttonEl, "tasbeh-ring");
-  }
-
-  // 33 / 99 tugaganda
-  function complete(buttonEl) {
-    if (!buttonEl) return;
-
-    restartAnimation(buttonEl, "tasbeh-complete");
-
-    // Kuchliroq halqa
-    restartAnimation(buttonEl, "tasbeh-success-ring");
-  }
-
-  // Progress
-  function setRing(ringFillEl, pct) {
-    if (!ringFillEl) return;
-
-    const value = Math.max(
-      0,
-      Math.min(100, Number(pct) || 0)
-    );
-
-    ringFillEl.style.setProperty(
-      "--pct",
-      `${value}%`
-    );
-  }
-
-  return {
-    pulse,
-    complete,
-    setRing
-  };
-
-})();
+};
