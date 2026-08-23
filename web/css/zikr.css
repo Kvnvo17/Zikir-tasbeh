@@ -47,3 +47,9 @@ textarea.zikr-textarea {
   overflow-y: auto;
   white-space: pre-wrap;
 } 
+
+.current-zikr{
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.5;
+} 
