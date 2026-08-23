@@ -86,6 +86,12 @@ from admin.panel import router as admin_panel_router
 
 app.include_router(admin_panel_router, prefix="/admin")
 
+from fastapi.responses import RedirectResponse
+
+@app.get("/")
+async def home():
+    return RedirectResponse("/web/")
+
 app.mount("/web", StaticFiles(directory="web", html=True), name="web")
 app.mount("/tutorial", StaticFiles(directory="tutorial", html=True), name="tutorial")
 app.mount("/admin-static", StaticFiles(directory="admin/static"), name="admin-static")
