@@ -1,20 +1,15 @@
 window.TasbehPage = (function () {
 
-  // ==========================================
-  // STATE
-  // ==========================================
-
   let state = {
     mode: "33",
     value: 0,
     zikr: null,
-
+    zikrs: [],
+    zikrIndex: 0,
     todayCount: 0,
     weekCount: 0,
-
     dailyGoal: 1000,
-
-    busy: false,
+    busy: false
   };
 
 
@@ -28,45 +23,28 @@ window.TasbehPage = (function () {
       root ||
       document.getElementById("page-root");
 
+    if (!root) {
+      console.error("page-root topilmadi");
+      return;
+    }
 
     root.innerHTML = `
       <div class="theme-tasbeh animate-in">
 
-        <!-- STATISTIKA -->
-
         <div class="mini-stats">
 
           <div class="mini-stat">
-            <div
-              class="v"
-              id="todayVal"
-            >
-              0
-            </div>
-
-            <div class="l">
-              Bugun
-            </div>
+            <div class="v" id="todayVal">0</div>
+            <div class="l">Bugun</div>
           </div>
 
-
           <div class="mini-stat">
-            <div
-              class="v"
-              id="weekVal"
-            >
-              0
-            </div>
-
-            <div class="l">
-              Hafta
-            </div>
+            <div class="v" id="weekVal">0</div>
+            <div class="l">Hafta</div>
           </div>
 
         </div>
 
-
-        <!-- KUNLIK MAQSAD -->
 
         <div
           class="goal-row"
@@ -92,8 +70,6 @@ window.TasbehPage = (function () {
 
         </div>
 
-
-        <!-- ZIKR -->
 
         <div class="zikr-select-row">
 
@@ -123,17 +99,14 @@ window.TasbehPage = (function () {
         </div>
 
 
-        <!-- REJIM -->
-
         <div class="mode-tabs">
 
           <button
-            class="mode-tab active"
+            class="mode-tab"
             data-mode="33"
           >
             33
           </button>
-
 
           <button
             class="mode-tab"
@@ -141,7 +114,6 @@ window.TasbehPage = (function () {
           >
             99
           </button>
-
 
           <button
             class="mode-tab"
@@ -152,8 +124,6 @@ window.TasbehPage = (function () {
 
         </div>
 
-
-        <!-- TASBEH -->
 
         <div class="tasbeh-wrap">
 
@@ -195,20 +165,16 @@ window.TasbehPage = (function () {
 
     await loadInitialData();
 
-
     bindEvents(root);
-
 
     updateModeUI(root);
 
-
     updateCountUI(root);
-
   }
 
 
   // ==========================================
-  // MA'LUMOTLARNI YUKLASH
+  // INITIAL DATA
   // ==========================================
 
   async function loadInitialData() {
@@ -219,41 +185,46 @@ window.TasbehPage = (function () {
         me,
         zikrs
       ] = await Promise.all([
-
         API.get("/users/me"),
-
-        API.get("/zikr"),
-
+        API.get("/zikr")
       ]);
 
 
-      // Kunlik maqsad
-
       state.dailyGoal =
-        me.daily_goal ||
-        1000;
+        me.daily_goal || 1000;
 
 
-      // Tanlangan zikr
-
-      state.zikr =
-
-        zikrs.find(
-          (z) =>
-            z.id ===
-            me.selected_zikr_id
-        )
-
-        ||
-
-        zikrs[0]
-
-        ||
-
-        null;
+      state.zikrs =
+        Array.isArray(zikrs)
+          ? zikrs
+          : [];
 
 
-      // Bugungi statistika
+      if (state.zikrs.length > 0) {
+
+        const selectedIndex =
+          state.zikrs.findIndex(
+            (z) =>
+              z.id === me.selected_zikr_id
+          );
+
+
+        state.zikrIndex =
+          selectedIndex >= 0
+            ? selectedIndex
+            : 0;
+
+
+        state.zikr =
+          state.zikrs[state.zikrIndex];
+
+      } else {
+
+        state.zikr = null;
+        state.zikrIndex = 0;
+
+      }
+
 
       const today =
         await API.get(
@@ -262,12 +233,9 @@ window.TasbehPage = (function () {
 
 
       state.todayCount =
-
         today &&
         today[0]
-
           ? today[0].count
-
           : 0;
 
 
@@ -283,7 +251,8 @@ window.TasbehPage = (function () {
 
 
       if (
-        typeof Toast !== "undefined"
+        typeof Toast !== "undefined" &&
+        Toast.show
       ) {
 
         Toast.show(
@@ -299,7 +268,7 @@ window.TasbehPage = (function () {
 
 
   // ==========================================
-  // STATISTIKA UI
+  // STATISTIKA
   // ==========================================
 
   function updateStatsUI() {
@@ -353,14 +322,11 @@ window.TasbehPage = (function () {
     if (goalFill) {
 
       const percent =
-
         state.dailyGoal > 0
-
           ? (
               state.todayCount /
               state.dailyGoal
             ) * 100
-
           : 0;
 
 
@@ -381,11 +347,12 @@ window.TasbehPage = (function () {
     if (zikrName) {
 
       zikrName.textContent =
-
         state.zikr
-
-          ? state.zikr.text
-
+          ? (
+              state.zikr.text ||
+              state.zikr.name ||
+              "Zikr"
+            )
           : "Zikr tanlanmagan";
 
     }
@@ -394,14 +361,14 @@ window.TasbehPage = (function () {
 
 
   // ==========================================
-  // EVENTLAR
+  // EVENTS
   // ==========================================
 
   function bindEvents(root) {
 
 
     // ========================================
-    // 33 / 99 / ∞
+    // 33 / 99 / INFINITE
     // ========================================
 
     root
@@ -420,7 +387,8 @@ window.TasbehPage = (function () {
 
 
             if (
-              typeof TG !== "undefined"
+              typeof TG !== "undefined" &&
+              TG.haptic
             ) {
 
               TG.haptic("light");
@@ -454,31 +422,27 @@ window.TasbehPage = (function () {
         "click",
         () => {
 
-          ZikrSelector.openPicker(
-            (zikr) => {
+          if (
+            typeof ZikrSelector !== "undefined" &&
+            ZikrSelector.openPicker
+          ) {
 
-              state.zikr =
-                zikr;
+            ZikrSelector.openPicker(
+              (zikr) => {
 
-
-              state.value = 0;
-
-
-              updateStatsUI();
-
-              updateCountUI(root);
-
-
-              if (
-                typeof TG !== "undefined"
-              ) {
-
-                TG.haptic("light");
+                setZikr(zikr);
 
               }
+            );
 
-            }
-          );
+          } else {
+
+            // Agar picker mavjud bo'lmasa
+            // o'zimiz keyingi zikrga o'tamiz
+
+            nextZikr();
+
+          }
 
         }
       );
@@ -500,124 +464,7 @@ window.TasbehPage = (function () {
 
       goalRow.addEventListener(
         "click",
-        () => {
-
-          Modal.open(`
-
-            <p class="section-title">
-              Kunlik maqsad
-            </p>
-
-
-            <input
-              type="number"
-              id="goalInput"
-              min="1"
-              value="${state.dailyGoal}"
-            />
-
-
-            <button
-              class="btn block accent-tasbeh-bg"
-              id="saveGoalBtn"
-            >
-              Saqlash
-            </button>
-
-          `);
-
-
-          const saveGoalBtn =
-            document.getElementById(
-              "saveGoalBtn"
-            );
-
-
-          if (saveGoalBtn) {
-
-            saveGoalBtn.addEventListener(
-              "click",
-              async () => {
-
-                const input =
-                  document.getElementById(
-                    "goalInput"
-                  );
-
-
-                const value =
-                  parseInt(
-                    input.value,
-                    10
-                  );
-
-
-                if (
-                  !value ||
-                  value <= 0
-                ) {
-
-                  Toast.show(
-                    "Noto'g'ri qiymat"
-                  );
-
-                  return;
-
-                }
-
-
-                try {
-
-                  const updated =
-                    await Loader.wrap(
-
-                      API.post(
-                        "/users/me/daily-goal",
-                        {
-                          daily_goal:
-                            value,
-                        }
-                      )
-
-                    );
-
-
-                  state.dailyGoal =
-                    updated.daily_goal;
-
-
-                  updateStatsUI();
-
-
-                  Modal.close();
-
-
-                  Toast.show(
-                    "Saqlandi"
-                  );
-
-
-                } catch (e) {
-
-                  console.error(
-                    "Maqsad xatosi:",
-                    e
-                  );
-
-
-                  Toast.show(
-                    e.message ||
-                    "Xatolik yuz berdi"
-                  );
-
-                }
-
-              }
-            );
-
-          }
-
-        }
+        openGoalModal
       );
 
     }
@@ -650,10 +497,106 @@ window.TasbehPage = (function () {
 
 
   // ==========================================
+  // ZIKR O'RNATISH
+  // ==========================================
+
+  function setZikr(zikr) {
+
+    if (!zikr) return;
+
+
+    state.zikr = zikr;
+
+
+    const index =
+      state.zikrs.findIndex(
+        (z) => z.id === zikr.id
+      );
+
+
+    if (index >= 0) {
+
+      state.zikrIndex = index;
+
+    }
+
+
+    // Zikr almashganda hisob 0
+    state.value = 0;
+
+
+    updateStatsUI();
+
+
+    updateCountUI(
+      document.getElementById(
+        "page-root"
+      )
+    );
+
+
+    if (
+      typeof TG !== "undefined" &&
+      TG.haptic
+    ) {
+
+      TG.haptic("light");
+
+    }
+
+  }
+
+
+  // ==========================================
+  // KEYINGI ZIKR
+  // ==========================================
+
+  function nextZikr() {
+
+    if (
+      !state.zikrs ||
+      state.zikrs.length === 0
+    ) {
+
+      return;
+
+    }
+
+
+    state.zikrIndex =
+      (
+        state.zikrIndex + 1
+      ) %
+      state.zikrs.length;
+
+
+    state.zikr =
+      state.zikrs[state.zikrIndex];
+
+
+    state.value = 0;
+
+
+    updateStatsUI();
+
+
+    updateCountUI(
+      document.getElementById(
+        "page-root"
+      )
+    );
+
+  }
+
+
+  // ==========================================
   // MODE UI
   // ==========================================
 
   function updateModeUI(root) {
+
+    if (!root) return;
+
 
     root
       .querySelectorAll(".mode-tab")
@@ -691,7 +634,9 @@ window.TasbehPage = (function () {
     let progress = 0;
 
 
-    try {
+    if (
+      typeof Counter !== "undefined"
+    ) {
 
       progress =
         Counter.progressPct(
@@ -699,12 +644,28 @@ window.TasbehPage = (function () {
           state.mode
         );
 
-    } catch (e) {
+    } else {
 
-      console.error(
-        "Counter progress xatosi:",
-        e
-      );
+      if (state.mode === "33") {
+
+        progress =
+          Math.round(
+            (state.value / 33) * 100
+          );
+
+      } else if (state.mode === "99") {
+
+        progress =
+          Math.round(
+            (state.value / 99) * 100
+          );
+
+      } else {
+
+        progress =
+          state.value % 100;
+
+      }
 
     }
 
@@ -737,8 +698,8 @@ window.TasbehPage = (function () {
 
 
       if (
-        typeof TasbehAnimation !==
-        "undefined"
+        typeof TasbehAnimation !== "undefined" &&
+        TasbehAnimation.setRing
       ) {
 
         TasbehAnimation.setRing(
@@ -754,29 +715,58 @@ window.TasbehPage = (function () {
 
 
   // ==========================================
-  // TASBEH BOSILISHI
+  // TASBEH ON TAP
   // ==========================================
 
   async function onTap(btnEl) {
 
-    // ----------------------------------------
-    // KEYINGI SON
-    // ----------------------------------------
-
-    state.value =
-      Counter.nextValue(
-        state.value,
-        state.mode
-      );
+    if (state.busy) {
+      return;
+    }
 
 
-    // ----------------------------------------
-    // ANIMATSIYA
-    // ----------------------------------------
-
+    // Keyingi son
     if (
-      typeof TasbehAnimation !==
-      "undefined"
+      typeof Counter !== "undefined"
+    ) {
+
+      state.value =
+        Counter.nextValue(
+          state.value,
+          state.mode
+        );
+
+    } else {
+
+      // Counter ishlamasa fallback
+
+      if (state.mode === "33") {
+
+        state.value =
+          state.value >= 33
+            ? 0
+            : state.value + 1;
+
+      } else if (state.mode === "99") {
+
+        state.value =
+          state.value >= 99
+            ? 0
+            : state.value + 1;
+
+      } else {
+
+        state.value++;
+
+      }
+
+    }
+
+
+    // Yumshoq animatsiya
+    if (
+      typeof TasbehAnimation !== "undefined" &&
+      TasbehAnimation.pulse
     ) {
 
       TasbehAnimation.pulse(
@@ -786,12 +776,10 @@ window.TasbehPage = (function () {
     }
 
 
-    // ----------------------------------------
-    // VIBRATSIYA
-    // ----------------------------------------
-
+    // Vibratsiya
     if (
-      typeof TG !== "undefined"
+      typeof TG !== "undefined" &&
+      TG.haptic
     ) {
 
       TG.haptic("light");
@@ -799,39 +787,56 @@ window.TasbehPage = (function () {
     }
 
 
-    // ----------------------------------------
     // UI
-    // ----------------------------------------
-
-    const root =
+    updateCountUI(
       document.getElementById(
         "page-root"
-      );
+      )
+    );
 
 
-    updateCountUI(root);
+    // ========================================
+    // YAKUNLANGANINI TEKSHIRISH
+    // ========================================
+
+    let completed = false;
 
 
-    // ----------------------------------------
-    // YAKUNLANDIMI?
-    // ----------------------------------------
+    if (
+      typeof Counter !== "undefined" &&
+      Counter.isComplete
+    ) {
 
-    const completed =
-      Counter.isComplete(
-        state.value,
-        state.mode
-      );
+      completed =
+        Counter.isComplete(
+          state.value,
+          state.mode
+        );
+
+    } else {
+
+      completed =
+        (
+          state.mode === "33" &&
+          state.value === 33
+        ) ||
+        (
+          state.mode === "99" &&
+          state.value === 99
+        );
+
+    }
 
 
-    // ----------------------------------------
+    // ========================================
     // YAKUNIY ANIMATSIYA
-    // ----------------------------------------
+    // ========================================
 
     if (completed) {
 
       if (
-        typeof TasbehAnimation !==
-        "undefined"
+        typeof TasbehAnimation !== "undefined" &&
+        TasbehAnimation.complete
       ) {
 
         TasbehAnimation.complete(
@@ -842,7 +847,8 @@ window.TasbehPage = (function () {
 
 
       if (
-        typeof TG !== "undefined"
+        typeof TG !== "undefined" &&
+        TG.haptic
       ) {
 
         TG.haptic("success");
@@ -853,178 +859,92 @@ window.TasbehPage = (function () {
 
 
     // ========================================
-    // SERVERGA YUBORISH
+    // SERVER
     // ========================================
 
-    API.post(
-      "/tasbeh/increment",
-      {
+    try {
 
-        mode:
-          state.mode,
+      const result =
+        await API.post(
+          "/tasbeh/increment",
+          {
+            mode: state.mode,
 
-        zikr_id:
-          state.zikr
-            ? state.zikr.id
-            : null,
+            zikr_id:
+              state.zikr
+                ? state.zikr.id
+                : null
+          }
+        );
+
+
+      if (result) {
+
+        state.todayCount =
+          result.today_count ??
+          state.todayCount;
+
+
+        state.weekCount =
+          result.week_count ??
+          state.weekCount;
+
+
+        state.dailyGoal =
+          result.daily_goal ??
+          state.dailyGoal;
 
       }
 
-    )
 
-      .then((result) => {
-
-        state.todayCount =
-          result.today_count;
-
-        state.weekCount =
-          result.week_count;
-
-        state.dailyGoal =
-          result.daily_goal;
+      updateStatsUI();
 
 
-        updateStatsUI();
+    } catch (error) {
 
-      })
+      console.error(
+        "Tasbeh API xatosi:",
+        error
+      );
 
-      .catch((error) => {
-
-        console.error(
-          "Tasbeh API xatosi:",
-          error
-        );
-
-      });
+    }
 
 
     // ========================================
-    // 33 / 99 TUGAGACH
-    // KEYINGI ZIKRGA O'TISH
+    // 33 / 99 TUGAGACH:
+    // 0 BO'LADI VA KEYINGI ZIKRGA O'TADI
     // ========================================
 
     if (
-
       completed &&
-
       (
         state.mode === "33" ||
         state.mode === "99"
       )
-
     ) {
 
       setTimeout(
-        async () => {
+        () => {
 
-          // ----------------------------------
-          // SANAGICHNI 0 QILISH
-          // ----------------------------------
-
+          // 0 ga qaytarish
           state.value = 0;
 
 
-          // ----------------------------------
-          // ZIKRLARNI YUKLASH
-          // ----------------------------------
-
-          try {
-
-            const zikrs =
-              await API.get(
-                "/zikr"
-              );
+          // Keyingi zikr
+          nextZikr();
 
 
-            if (
-              Array.isArray(zikrs) &&
-              zikrs.length > 0
-            ) {
-
-              let currentIndex =
-                -1;
-
-
-              // Hozirgi zikr indeksini topish
-
-              if (state.zikr) {
-
-                currentIndex =
-                  zikrs.findIndex(
-                    (z) =>
-                      z.id ===
-                      state.zikr.id
-                  );
-
-              }
-
-
-              // --------------------------------
-              // KEYINGI INDEKS
-              // --------------------------------
-
-              let nextIndex;
-
-
-              if (
-                currentIndex === -1
-              ) {
-
-                nextIndex = 0;
-
-              } else {
-
-                nextIndex =
-                  (
-                    currentIndex + 1
-                  ) %
-                  zikrs.length;
-
-              }
-
-
-              // --------------------------------
-              // KEYINGI ZIKR
-              // --------------------------------
-
-              state.zikr =
-                zikrs[nextIndex];
-
-            }
-
-          } catch (error) {
-
-            console.error(
-              "Keyingi zikr xatosi:",
-              error
-            );
-
-          }
-
-
-          // ----------------------------------
-          // UI YANGILASH
-          // ----------------------------------
-
+          // UI yangilash
           updateStatsUI();
 
-          updateCountUI(root);
 
-
-          // ----------------------------------
-          // YENGIL VIBRATSIYA
-          // ----------------------------------
-
-          if (
-            typeof TG !== "undefined"
-          ) {
-
-            TG.haptic("light");
-
-          }
+          updateCountUI(
+            document.getElementById(
+              "page-root"
+            )
+          );
 
         },
-
         500
       );
 
@@ -1034,13 +954,183 @@ window.TasbehPage = (function () {
 
 
   // ==========================================
+  // DAILY GOAL
+  // ==========================================
+
+  function openGoalModal() {
+
+    if (
+      typeof Modal === "undefined" ||
+      !Modal.open
+    ) {
+
+      return;
+
+    }
+
+
+    Modal.open(`
+
+      <p class="section-title">
+        Kunlik maqsad
+      </p>
+
+
+      <input
+        type="number"
+        id="goalInput"
+        min="1"
+        value="${state.dailyGoal}"
+      />
+
+
+      <button
+        class="btn block accent-tasbeh-bg"
+        id="saveGoalBtn"
+      >
+        Saqlash
+      </button>
+
+    `);
+
+
+    const saveGoalBtn =
+      document.getElementById(
+        "saveGoalBtn"
+      );
+
+
+    if (!saveGoalBtn) return;
+
+
+    saveGoalBtn.addEventListener(
+      "click",
+      async () => {
+
+        const input =
+          document.getElementById(
+            "goalInput"
+          );
+
+
+        const value =
+          parseInt(
+            input.value,
+            10
+          );
+
+
+        if (
+          !value ||
+          value <= 0
+        ) {
+
+          if (
+            typeof Toast !== "undefined" &&
+            Toast.show
+          ) {
+
+            Toast.show(
+              "Noto'g'ri qiymat"
+            );
+
+          }
+
+          return;
+
+        }
+
+
+        try {
+
+          let updated;
+
+
+          if (
+            typeof Loader !== "undefined" &&
+            Loader.wrap
+          ) {
+
+            updated =
+              await Loader.wrap(
+                API.post(
+                  "/users/me/daily-goal",
+                  {
+                    daily_goal: value
+                  }
+                )
+              );
+
+          } else {
+
+            updated =
+              await API.post(
+                "/users/me/daily-goal",
+                {
+                  daily_goal: value
+                }
+              );
+
+          }
+
+
+          state.dailyGoal =
+            updated.daily_goal ||
+            value;
+
+
+          updateStatsUI();
+
+
+          Modal.close();
+
+
+          if (
+            typeof Toast !== "undefined" &&
+            Toast.show
+          ) {
+
+            Toast.show(
+              "Saqlandi"
+            );
+
+          }
+
+        } catch (e) {
+
+          console.error(
+            "Maqsad xatosi:",
+            e
+          );
+
+
+          if (
+            typeof Toast !== "undefined" &&
+            Toast.show
+          ) {
+
+            Toast.show(
+              e.message ||
+              "Xatolik yuz berdi"
+            );
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+
+  // ==========================================
   // PUBLIC
   // ==========================================
 
   return {
-
-    render,
-
+    render: render,
+    onTap: onTap
   };
 
 })();
