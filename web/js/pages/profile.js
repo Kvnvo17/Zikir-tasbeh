@@ -157,35 +157,6 @@ indoww.ProfilePage = (function () {
     }
   }
 
-  function renderThemes(root) {
-    const grid = document.getElementById("themeGrid");
-    const gradients = {
-      default: "linear-gradient(135deg,#4f7cff,#7a5cff)",
-      emerald: "linear-gradient(135deg,#29c9a0,#12836c)",
-      amber: "linear-gradient(135deg,#ffb03c,#c97a12)",
-      rose: "linear-gradient(135deg,#ff6b90,#c73763)",
-      indigo: "linear-gradient(135deg,#6a5cff,#3d2fb8)",
-      graphite: "linear-gradient(135deg,#5a5f6e,#26282f)",
-    };
-
-    grid.innerHTML = THEMES.map(
-      (t) => `<div class="theme-swatch ${me && me.tasbeh_theme === t ? "selected" : ""}" data-theme="${t}"
-        style="background:${gradients[t]}"></div>`
-    ).join("");
-
-    grid.querySelectorAll(".theme-swatch").forEach((sw) => {
-      sw.addEventListener("click", async () => {
-        try {
-          me = await API.post("/users/me/theme", { theme: sw.dataset.theme });
-          grid.querySelectorAll(".theme-swatch").forEach((s) => s.classList.remove("selected"));
-          sw.classList.add("selected");
-          TG.haptic("light");
-        } catch (e) {
-          Toast.show(e.message);
-        }
-      });
-    });
-  }
 
   return { render };
 })();
