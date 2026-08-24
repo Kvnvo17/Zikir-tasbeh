@@ -88,7 +88,7 @@ app.include_router(admin_panel_router, prefix="/admin")
 
 from fastapi.responses import RedirectResponse
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def home():
     return RedirectResponse("/web/")
 
